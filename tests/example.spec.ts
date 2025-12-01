@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import {faker} from "@faker-js/faker/locale/ar";
 
 test('verify fields', async ({ page }) => {
   await page.goto('https://loan-app.tallinn-learning.ee/small-loan');
@@ -23,8 +24,8 @@ test(' apply for e2e', async ({ page }) => {
     await page.goto('https://loan-app.tallinn-learning.ee/small-loan');
     await page.getByTestId('id-small-loan-calculator-field-apply').click()
     await expect(page.getByTestId('login-popup-continue-button')).toBeDisabled()
-    await page.getByTestId('login-popup-username-input').fill('test')
-    await page.getByTestId('login-popup-password-input').fill('1234')
+    await page.getByTestId('login-popup-username-input').fill(faker.internet.email())
+    await page.getByTestId('login-popup-password-input').fill(faker.internet.password())
     await page.getByTestId('login-popup-continue-button').click()
     await expect(page.getByTestId('final-page-full-name')).toBeVisible()
     await expect(page.getByTestId('final-page-communication-language')).toBeVisible()

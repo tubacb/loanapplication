@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('has', async ({ page }) => {
+test('verify fields', async ({ page }) => {
   await page.goto('https://loan-app.tallinn-learning.ee/small-loan');
     await expect(page.getByTestId('id-small-loan-calculator-field-amount')).toBeVisible()
     await expect(page.getByTestId('id-small-loan-calculator-field-amount-slider')).toBeVisible()
@@ -32,7 +32,6 @@ test(' apply for e2e', async ({ page }) => {
     await page.getByTestId('final-page-success-ok-button').click()
     await expect(page.getByTestId('id-small-loan-calculator-field-amount')).toBeInViewport()
 });
-
 
 test('verify validation error for amount field', async ({ page }) => {
     await page.goto('https://loan-app.tallinn-learning.ee/small-loan');

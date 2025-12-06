@@ -10,11 +10,11 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('verify fields', async ({  }) => {
-    await (pageObject.amount).toBeVisible;
-    await (pageObject.amountSlider).toBeVisible;
-    await (pageObject.period).toBeVisible;
-    await (pageObject.periodSlider).toBeVisible;
-    await (pageObject.applyButton).toBeVisible;
+    await expect(pageObject.amount).toBeVisible();
+    await expect(pageObject.amountSlider).toBeVisible();
+    await expect(pageObject.period).toBeVisible();
+    await expect(pageObject.periodSlider).toBeVisible();
+    await expect(pageObject.applyButton).toBeVisible();
 });
 
 test('verify apply for loan button scrolls back to top', async ({  }) => {

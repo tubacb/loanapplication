@@ -1,42 +1,47 @@
 import { test, expect } from '@playwright/test';
+import {faker} from "@faker-js/faker/locale/ar";
+import {LoanPage} from "./pages/loan-page";
 
-test('verify fields', async ({ page }) => {
-  await page.goto('https://loan-app.tallinn-learning.ee/small-loan');
-    await expect(page.getByTestId('id-small-loan-calculator-field-amount')).toBeVisible()
-    await expect(page.getByTestId('id-small-loan-calculator-field-amount-slider')).toBeVisible()
-    await expect(page.getByTestId('ib-small-loan-calculator-field-period')).toBeVisible()
-    await expect(page.getByTestId('ib-small-loan-calculator-field-period-slider')).toBeVisible()
-    await expect(page.getByTestId('id-small-loan-calculator-field-apply')).toBeVisible()
+let loanPage:LoanPage;
+
+test.beforeEach(async ({ page }) => {
+    await page.goto(process.env.APP_URL);
+    loanPage = new LoanPage(page);
+})
+
+test('verify fields', async ({  }) => {
+    await loanPage.checkPageVisibility();
+
 });
 
-test('verify apply for loan button scrolls back to top', async ({ page }) => {
-    await page.goto('https://loan-app.tallinn-learning.ee/small-loan');
-    await page.getByTestId('id-image-element-button-image-1').scrollIntoViewIfNeeded()
-    await page.getByTestId('id-image-element-button-image-1').click()
-    await expect (page.getByTestId('id-small-loan-calculator-field-amount')).toBeInViewport()
-    await page.getByTestId('id-image-element-button-image-2').scrollIntoViewIfNeeded()
-    await page.getByTestId('id-image-element-button-image-2').click()
-    await expect (page.getByTestId('id-small-loan-calculator-field-amount')).toBeInViewport()
+test('verify apply for loan button scrolls back to top', async ({  }) => {
+   await loanPage.img1.scrollIntoViewIfNeeded()
+    await loanPage.img1.click()
+    await expect (loanPage.amount).toBeInViewport()
+    await loanPage.img2.scrollIntoViewIfNeeded()
+    await loanPage.img2.click()
+    await expect (loanPage.amount).toBeInViewport()
 });
 
-test(' apply for e2e', async ({ page }) => {
-    await page.goto('https://loan-app.tallinn-learning.ee/small-loan');
-    await page.getByTestId('id-small-loan-calculator-field-apply').click()
-    await expect(page.getByTestId('login-popup-continue-button')).toBeDisabled()
-    await page.getByTestId('login-popup-username-input').fill('test')
-    await page.getByTestId('login-popup-password-input').fill('1234')
-    await page.getByTestId('login-popup-continue-button').click()
-    await expect(page.getByTestId('final-page-full-name')).toBeVisible()
-    await expect(page.getByTestId('final-page-communication-language')).toBeVisible()
-    await page.getByTestId('final-page-continue-button').click()
-    await page.getByTestId('final-page-success-ok-button').click()
-    await expect(page.getByTestId('id-small-loan-calculator-field-amount')).toBeInViewport()
+test(' apply for e2e', async ({  }) => {
+
+    await loanPage.applyButton.click()
+    await expect(loanPage.continueButton).toBeDisabled();
+    await loanPage.usernameInput.fill(faker.internet.email());
+    await loanPage.passwordInput.fill(faker.internet.password());
+    await loanPage.continueButton.click();
+    await loanPage.checkVisibility(loanPage.fullName)
+    await loanPage.checkVisibility(loanPage.comLanguage)
+    await loanPage.finalContinueButton.click();
+    await loanPage.okButton.click();
+    await expect(loanPage.amount).toBeInViewport()
 });
 
-test('verify validation error for amount field', async ({ page }) => {
-    await page.goto('https://loan-app.tallinn-learning.ee/small-loan');
-    await (page.getByTestId('id-small-loan-calculator-field-amount')).fill('0');
-    await expect (page.getByTestId('id-small-loan-calculator-field-error')).toBeVisible();
-    await (page.getByTestId('id-small-loan-calculator-field-amount')).fill('500');
-    await expect (page.getByTestId('id-small-loan-calculator-field-error')).toBeHidden();
+test('verify validation error for amount field', async ({  }) => {
+    await loanPage.amount.fill('0');
+    await loanPage.checkVisibility(loanPage.error);
+    await loanPage.amount.fill('500');
+    await expect (loanPage.error).toBeHidden();
+
 });
+

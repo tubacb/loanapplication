@@ -1,6 +1,6 @@
-import {Locator, Page} from "@playwright/test";
+import {expect, Locator, Page} from "@playwright/test";
 
-export class PageObject {
+export class LoanPage {
     readonly page: Page
     readonly amount: Locator
     readonly amountSlider: Locator
@@ -36,6 +36,15 @@ export class PageObject {
         this.error = page.getByTestId('id-small-loan-calculator-field-error');
 
     }
-
+    async checkVisibility(locator:Locator) {
+        await expect(locator).toBeVisible();
+    }
+    async checkPageVisibility() {
+        await this.checkVisibility(this.amount);
+        await this.checkVisibility(this.amountSlider);
+        await this.checkVisibility(this.periodSlider);
+        await this.checkVisibility(this.period);
+        await this.checkVisibility(this.applyButton);
+    }
 }
 
